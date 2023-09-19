@@ -1,0 +1,103 @@
+import java.util.*;
+
+public class AirplaneProfitability {
+
+    private static class Airplane {
+        private String name;
+        private double minTakeoffWeight;
+        private double maxTakeoffWeight;
+        private double maxRange;
+        private double hourlyCost;
+        private double fuelBurn;
+
+        public Airplane(String name, double minTakeoffWeight, double maxTakeoffWeight,
+                        double maxRange, double hourlyCost, double fuelBurn) {
+            this.name = name;
+            this.minTakeoffWeight = minTakeoffWeight;
+            this.maxTakeoffWeight = maxTakeoffWeight;
+            this.maxRange = maxRange;
+            this.hourlyCost = hourlyCost;
+            this.fuelBurn = fuelBurn;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getMinTakeoffWeight() {
+            return minTakeoffWeight;
+        }
+
+        public double getMaxTakeoffWeight() {
+            return maxTakeoffWeight;
+        }
+
+        public double getMaxRange() {
+            return maxRange;
+        }
+
+        public double getHourlyCost() {
+            return hourlyCost;
+        }
+
+        public double getFuelBurn() {
+            return fuelBurn;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        List<Airplane> fleet = new ArrayList<>();
+        while (true) {
+            System.out.println("Enter airplane name (or 'quit' to exit):");
+            String name = scanner.nextLine().trim();
+            if (name.equalsIgnoreCase("quit")) {
+                break;
+            }
+
+            System.out.println("Enter minimum takeoff weight (in pounds):");
+            double minTakeoffWeight = scanner.nextDouble();
+            scanner.nextLine(); // consume the newline character
+
+            System.out.println("Enter maximum takeoff weight (in pounds):");
+            double maxTakeoffWeight = scanner.nextDouble();
+            scanner.nextLine(); // consume the newline character
+
+            System.out.println("Enter maximum range (in miles):");
+            double maxRange = scanner.nextDouble();
+            scanner.nextLine(); // consume the newline character
+
+            System.out.println("Enter hourly cost to fly (in dollars):");
+            double hourlyCost = scanner.nextDouble();
+            scanner.nextLine(); // consume the newline character
+
+            System.out.println("Enter fuel burn (in gallons per hour):");
+            double fuelBurn = scanner.nextDouble();
+            scanner.nextLine(); // consume the newline character
+
+            Airplane airplane = new Airplane(name, minTakeoffWeight, maxTakeoffWeight,
+                                              maxRange, hourlyCost, fuelBurn);
+            fleet.add(airplane);
+        }
+
+        Airplane mostProfitable = null;
+        double highestProfit = 0.0;
+        for (Airplane airplane : fleet) {
+            System.out.println("Calculating profitability for " + airplane.getName() + "...");
+            double revenue = airplane.getMaxRange() * 2; // assume round trip
+            double fuelCost = airplane.getFuelBurn() * 4.29; // assume $4.29/gallon
+            double totalCost = airplane.getHourlyCost() * 10 + fuelCost; // assume 10 hour flight
+            double profit = revenue - totalCost;
+            System.out.println("Profit for " + airplane.getName() + ": $" + profit);
+
+            if (mostProfitable == null || profit > highestProfit) {
+                mostProfitable = airplane;
+                highestProfit = profit;
+            }
+        }
+
+        System.out.println("The most profitable airplane is " + mostProfitable.getName() +
+                           " with a profit of $" + highestProfit);
+    }
+}
