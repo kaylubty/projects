@@ -1,0 +1,118 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class URPaint extends JFrame {
+    private PaintPanel paintPanel;
+    private ControlPanel controlPanel;
+
+    public URPaint() {
+        super("URPaint");
+
+        // Create the paint panel and control panel
+        paintPanel = new PaintPanel();
+        controlPanel = new ControlPanel(paintPanel);
+
+        // Add the panels to the frame
+        add(controlPanel, BorderLayout.PAGE_START);
+        add(paintPanel, BorderLayout.CENTER);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new URPaint();
+    }
+}
+
+class PaintPanel extends JPanel {
+    private Color shapeColor = Color.BLACK;
+    private Color bgColor = Color.WHITE;
+    private ShapeType shapeType = ShapeType.CIRCLE;
+    private int shapeSize = 50;
+    private int x, y;
+
+    public PaintPanel() {
+        setBackground(bgColor);
+
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                x = e.getX();
+                y = e.getY();
+                repaint();
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                x = e.getX();
+                y = e.getY();
+                repaint();
+            }
+        });
+    }
+
+    public void setShapeType(ShapeType shapeType) {
+        this.shapeType = shapeType;
+    }
+
+    public void setShapeColor(Color shapeColor) {
+        this.shapeColor = shapeColor;
+    }
+
+    public void setBgColor(Color bgColor) {
+        this.bgColor = bgColor;
+        setBackground(bgColor);
+    }
+
+    public void setShapeSize(int shapeSize) {
+        this.shapeSize = shapeSize;
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.setColor(shapeColor);
+
+        if (shapeType == ShapeType.CIRCLE) {
+            g.fillOval(x - shapeSize/2, y - shapeSize/2, shapeSize, shapeSize);
+        } else if (shapeType == ShapeType.SQUARE) {
+            g.fillRect(x - shapeSize/2, y - shapeSize/2, shapeSize, shapeSize);
+        }
+    }
+}
+
+class ControlPanel extends JPanel {
+    private PaintPanel paintPanel;
+
+    public ControlPanel(PaintPanel paintPanel) {
+        this.paintPanel = paintPanel;
+
+        // Create the shape and color choosers
+        JComboBox<ShapeType> shapeChooser = new JComboBox<>(ShapeType.values());
+        JComboBox<String> colorChooser = new JComboBox<>(new String[] {"Black", "Red", "Green", "Blue", "Yellow"});
+        JComboBox<String> bgColorChooser = new JComboBox<>(new String[] {"White", "Black", "Red", "Green", "Blue", "Yellow"});
+        JSlider sizeChooser = new JSlider(10, 100, 50);
+
+        // Set the initial values for the choosers
+        shapeChooser.setSelectedItem(ShapeType.CIRCLE);
+        colorChooser.setSelectedItem("Black");
+        bgColorChooser.setSelectedItem("White");
+
+        // Add listeners to update the paint panel when the choosers are changed
+        shapeChooser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                paintPanel.setShapeType((ShapeType) shapeChooser.getSelectedItem());
+            }
+        });
+
+        colorChooser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String colorString = (String) colorChooser.getSelectedItem();
+                Color color = Color.BLACK;
+
+                if (colorString.equals("Red")) {
+                    color = Color.RED;
+                } else
