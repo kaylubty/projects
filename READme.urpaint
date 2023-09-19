@@ -1,0 +1,8 @@
+URPaint is a Java-based interactive painting application that allows users to create, customize, and manipulate shapes on a canvas. This README provides an overview of the application, its features, and how to run it.
+
+- **Shape Selection:** Users can choose between two shapes: circle and square.
+- **Shape Customization:** Customize the color of the selected shape.
+- **Background Color:** Customize the background color of the canvas.
+- **Size Adjustment:** Adjust the size of the shape by dragging the mouse.
+- **Real-Time Rendering:** Shapes are rendered and updated in real-time as users interact with the application.
+- **User-Friendly Interface:** The application features an intuitive graphical user interface (GUI) developed with Java Swing.
