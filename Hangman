@@ -1,0 +1,112 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
+
+#define MAX_TRIES 6
+#define MAX_WORD_LENGTH 20
+#define NUM_WORDS 10
+
+char *wordList[NUM_WORDS] = {
+    "programming",
+    "computer",
+    "hangman",
+    "language",
+    "openai",
+    "challenge",
+    "developer",
+    "gaming",
+    "learning",
+    "victory"
+};
+
+void clearScreen() {
+    system("clear || cls");
+}
+
+void displayHangman(int tries) {
+    const char *hangmanStages[] = {
+        "   ____\n   |  |\n      |\n      |\n      |\n      |\n=========",
+        "   ____\n   |  |\n   O  |\n      |\n      |\n      |\n=========",
+        "   ____\n   |  |\n   O  |\n   |  |\n      |\n      |\n=========",
+        "   ____\n   |  |\n   O  |\n  /|  |\n      |\n      |\n=========",
+        "   ____\n   |  |\n   O  |\n  /|\\ |\n      |\n      |\n=========",
+        "   ____\n   |  |\n   O  |\n  /|\\ |\n  /   |\n      |\n=========",
+        "   ____\n   |  |\n   O  |\n  /|\\ |\n  / \\ |\n      |\n========="
+    };
+
+    printf("%s\n", hangmanStages[tries]);
+}
+
+void displayWord(char *word, char *guessedLetters) {
+    int len = strlen(word);
+
+    for (int i = 0; i < len; i++) {
+        if (strchr(guessedLetters, word[i]) != NULL || !isalpha(word[i])) {
+            printf("%c ", word[i]);
+        } else {
+            printf("_ ");
+        }
+    }
+
+    printf("\n");
+}
+
+int isGameOver(char *word, char *guessedLetters) {
+    int len = strlen(word);
+
+    for (int i = 0; i < len; i++) {
+        if (strchr(guessedLetters, word[i]) == NULL && isalpha(word[i])) {
+            return 0; // Game is not over
+        }
+    }
+
+    return 1; // Game is over
+}
+
+int main() {
+    srand(time(NULL));
+
+    char *word = wordList[rand() % NUM_WORDS];
+    char guessedLetters[MAX_WORD_LENGTH] = "";
+    int tries = 0;
+
+    clearScreen();
+    printf("Welcome to Hangman!\n");
+
+    while (tries < MAX_TRIES) {
+        printf("\n");
+        displayHangman(tries);
+        displayWord(word, guessedLetters);
+
+        char guess;
+        printf("Enter a letter: ");
+        scanf(" %c", &guess);
+        guess = tolower(guess);
+
+        if (strchr(guessedLetters, guess) != NULL) {
+            printf("You already guessed that letter!\n");
+            continue;
+        }
+
+        guessedLetters[strlen(guessedLetters)] = guess;
+        
+        if (strchr(word, guess) == NULL) {
+            tries++;
+        }
+
+        if (isGameOver(word, guessedLetters)) {
+            clearScreen();
+            printf("Congratulations! You guessed the word: %s\n", word);
+            break;
+        }
+    }
+
+    if (tries >= MAX_TRIES) {
+        clearScreen();
+        printf("Game over! The word was: %s\n", word);
+    }
+
+    return 0;
+}
